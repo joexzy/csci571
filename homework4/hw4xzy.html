@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Homework 4</title>
+		<style>
+			h1 {
+				text-align: center;
+				margin: 100px auto 0;
+			}
+
+			#sub {
+				text-align: center;
+				margin: 40px auto 0;
+			}
+
+		</style>
+
+		<script type="text/javascript">
+
+			var jsonObj;
+			var html_text;
+
+			function loadJSON (url) {
+				var jsonDoc;
+				var xmlhttp = new XMLHttpRequest();
+				xmlhttp.overrideMimeType("application/json");
+				xmlhttp.open("GET", url, false); //open, send, responseText are
+
+				xmlhttp.send();//properties of XMLHTTPRequest
+				jsonDoc = xmlhttp.responseText;
+				if(xmlhttp.status == 404) { //json file doesnot exist
+					alert("ERROR: File does not exist!");
+					return false;
+				}
+					return jsonDoc;
+			}
+
+			function generateHTML(jsonObj) {
+
+				if(typeof (jsonObj.Mainline.Table.Row) == "undefined") { //if no Row(no movie data)
+					alert("Error: JSON File contains no films!");
+				}
+
+				html_text = "<html><head><title>Highest-grossing films</title></head><body>";
+
+				var data = jsonObj.Mainline.Table.Header.Data;
+				var row = jsonObj.Mainline.Table.Row;
+
+				var a = Object.keys(row[0]);
+
+				html_text += "<div style='margin:0 auto; width:1500px;'><table border='2' height='3000px'>";
+
+				html_text += "<tr>";
+				for(var i = 0; i < data.length; i++){
+					html_text += "<th height='50px'>" + data[i] + "</th>";
+				}
+				html_text += "</tr>";
+
+
+				for(var i = 0; i < row.length; i++){
+					html_text += "<tr>";
+					var movieNodeList = row[i];
+					var key = Object.keys(movieNodeList);
+
+					for(var j = 0; j < key.length; j++){
+						//html_text += "<td>" + movieNodeList[key[j]] + "</td>";
+
+						if(key[j] == "Hubs") {
+							//html_text += "<td>" + movieNodeList[key[j]] + "</td>";
+							var value = movieNodeList[key[j]];
+
+							if (value.Hub.length == 0) {
+								html_text += "<td>" + " " + "</td>";
+							}
+							else {
+								html_text += "<td style='width: 400px'><ul>";
+								for (var t = 0; t < value.Hub.length; t++) {
+									if (t == 0) {
+										html_text += "<li style='font-weight: bold'>" + value.Hub[t] + "</li>";
+									} else {
+										html_text += "<li>" + value.Hub[t] + "</li>";
+									}
+								}
+								html_text += "</ul></td>";
+							}
+
+						}
+						else if(key[j] == "HomePage"){
+							html_text += "<td style='width: 500px'><a href='" + movieNodeList[key[j]] + "'>" + movieNodeList[key[j]] + "</a></td>";
+						}
+						else if (key[j] == "Logo"){
+							html_text += "<td><img src='" + movieNodeList[key[j]] + "'></td>";
+						}
+						else{
+								html_text += "<td>" + movieNodeList[key[j]] + "</td>";
+						}
+
+					}
+					html_text += "</tr>";
+				}
+
+				html_text += "</table></div>";
+				html_text += "</body></html>";
+
+			}
+
+
+			function viewJSON(userInput) {
+
+				var url = userInput.URL.value;
+
+				var str = "" + url;
+				while (str.lastIndexOf(" ") >= 0) {
+					str = str.replace(" ", "");
+				}
+				if (str.length == 0 && url.length > 0) {
+					alert("ERROR: You just typed whitespace!");
+					return;
+				}
+
+				if (url.length == 0) {
+					alert("ERROR: Your input is empty!")
+					return;
+				}
+
+				if(!loadJSON(url)){
+					return;
+				}
+
+				try {
+					jsonObj = JSON.parse(loadJSON(url));
+				}
+				catch(exception){
+
+					alert("Other Errors! Maybe invalid files!");
+					return;
+				}
+				generateHTML(jsonObj);
+
+				var newWin = window.open("", "Assignment4", "height=900,width=1600");
+				newWin.document.write(html_text);
+				newWin.document.close();
+
+
+
+
+			}
+
+
+
+		</script>
+	</head>
+
+	<body>
+		<h1>Enter URL for Highest-grossing films List JSON File</h1>
+
+		<div id="sub">
+		<form name="myForm" method="POST">
+			<input type="text" name="URL" maxlength="255" size="45" />
+			<br><br><br>
+			<input type="button" name="submit" value="Submit Query" onclick="viewJSON(this.form)" />
+		</form>
+		</div>
+
+	</body>
+</html>
