@@ -1,4 +1,4 @@
-CSCI571 Homework 4
+CSCI 571 Homework 4
 ===================
 * It's an HTML/JavaScript program, which takes the URL of a JSON document containing top grossing films information, parses 
 the JSON file, and extracts the list of top grossing films, displaying them in a table. 
