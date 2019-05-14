@@ -1,0 +1,11 @@
+platform :ios, '9.0'
+
+target 'csci571Hw9' do
+  use_frameworks!
+  pod 'SwiftyJSON', '~> 4.2.0'
+  pod 'Alamofire', '~> 4.8.1'
+  pod 'McPicker', '~> 2.0.0'
+  pod 'Toast-Swift', '~> 4.0.0'
+  pod 'SwiftSpinner', '~> 1.6.2'
+
+end
